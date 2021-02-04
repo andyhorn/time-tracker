@@ -1,22 +1,25 @@
-name: Deploy to GitHub Pages
+name: Build and Deploy
 on:
   push:
     branches:
       - master
 jobs:
-  gh-pages-deploy:
-    name: Deploying to GitHub Pages
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: nodenv/setup-nodenv
-        # You may pin to the exact commit or the version.
-        # uses: nodenv/actions-setup-nodenv@6faff6196d33cbbcd308c6b4af7cda5f4fd834f5
-        uses: nodenv/actions-setup-nodenv@v2.0.4
-      - name: Checkout branch
-        uses: actions/checkout@v2
-      - name: Clean install dependencies
-        run: npm ci
-      - name: Run deployment script
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+        with:
+          persist-credentials: false 
+
+      - name: Install and Build 🔧
         run: |
-          git config user.name "Andrew Horn" && git config user.email "andyjhorn@gmail.com"
-          npm run gh-deploy
+          npm install
+          npm run-script build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.6.2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: dist
