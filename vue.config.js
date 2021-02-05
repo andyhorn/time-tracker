@@ -1,3 +1,3 @@
 module.exports = {
-    publicPath: '/time-tracker/'
+    publicPath: process.env.NODE_ENV == 'production' ? '/time-tracker/' : '/'
 }

@@ -7,12 +7,13 @@
         <b-button variant="primary" @click="onNewProject" :disabled="isNewProjectDisabled">Submit</b-button>
       </b-input-group-append>
     </b-input-group>
-    <b-button variant="info" @click="onStop" :disabled="isStopDisabled">Stop</b-button>
+    <b-button variant="danger" @click="onStop" :disabled="isStopDisabled">Stop All</b-button>
     <project-block v-for="project in projects" :key="project.id" 
       :project="project"
       @selected="onProjectSelected"
       @delete="onProjectDelete"
       @clear="onProjectClear"
+      @stop="onProjectStop"
       @onChange="onProjectChange" />
   </div>
 </template>
@@ -130,6 +131,15 @@ export default {
       if (e.code == 'Enter') {
         this.onNewProject();
       }
+    },
+    onProjectStop(id) {
+      const project = this.projects.find(p => p.id == id);
+
+      if (project == null) {
+        return;
+      }
+
+      this.deSelectProject(project);
     },
     onStop() {
       this.projects.forEach(this.deSelectProject);
