@@ -9,7 +9,10 @@
         </div>
         <div class="row">
             <div class="col ml-3">
-                <h1>{{ project.name }}</h1>
+                <div class="d-flex align-items-baseline">
+                    <h1>{{ project.name }}</h1>
+                    <p class="ml-2"><small>({{ status }})</small></p>
+                </div>
                 <p v-if="!hasDurations">Total duration: {{ totalDuration }}</p>
                 <p v-else>Not started.</p>
             </div>
@@ -84,6 +87,11 @@ export default {
         },
         isClearTimesDisabled() {
             return this.project.durations.length == 0;
+        },
+        status() {
+            return this.project.isSelected
+                ? 'active'
+                : 'inactive';
         }
     },
     methods: {
