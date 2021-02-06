@@ -17,6 +17,19 @@ export function printDuration(hours, minutes, seconds) {
     return `${_padDigit(hours)}:${_padDigit(minutes)}:${_padDigit(seconds)}`;
 }
 
+export function hour24ToDate(time) {
+    const hour = time.split(':')[0];
+    const minute = time.split(':')[1];
+    const second = time.split(':')[2];
+
+    const date = new Date();
+    date.setHours(Number(hour));
+    date.setMinutes(Number(minute));
+    date.setSeconds(Number(second));
+
+    return date;
+}
+
 function _padDigit(digit) {
     if (digit == null || isNaN(digit)) {
         return '00';

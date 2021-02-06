@@ -13,11 +13,14 @@
                     <h1>{{ project.name }}</h1>
                     <p class="ml-2"><small>({{ status }})</small></p>
                 </div>
-                <p v-if="!hasDurations">Total duration: {{ totalDuration }}</p>
+                <p v-if="hasDurations">Total duration: {{ totalDuration }}</p>
                 <p v-else>Not started.</p>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <duration-list :durations="project.durations" />
+            <div class="col-md-6 col-lg-5">
+                <ul class="list-group my-3">
+                    <duration v-for="duration in project.durations" :key="duration.id"
+                        :duration="duration" @change="onDurationChange" />
+                </ul>
             </div>
         </div>
         <div class="row">
@@ -32,14 +35,14 @@
 </template>
 
 <script>
-import DurationList from './DurationList';
+import Duration from './Duration';
 import { getDuration } from '../utils/time';
 
 export default {
     name: 'ProjectBlock',
     props: ['project'],
     components: {
-        'duration-list': DurationList,
+        'duration': Duration,
     },
     data() {
         return {
@@ -82,7 +85,7 @@ export default {
 
             return getDuration(0, totalTicks);
         },
-        hasDuration() {
+        hasDurations() {
             return this.project.durations.length > 0;
         },
         isClearTimesDisabled() {
@@ -106,6 +109,19 @@ export default {
         },
         onStop() {
             this.$emit('stop', this.project.id);
+        },
+        onDurationChange(id, duration) {
+            const project = Object.assign({}, this.project);
+            const index = project.durations.findIndex(d => d.id == id);
+
+            if (index == -1) {
+                return;
+            }
+
+            project.durations = [...this.project.durations];
+            project.durations[index] = duration;
+
+            this.$emit('change', project);
         }
     }
 }

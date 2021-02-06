@@ -14,13 +14,14 @@
       @delete="onProjectDelete"
       @clear="onProjectClear"
       @stop="onProjectStop"
-      @onChange="onProjectChange" />
+      @change="onProjectChange" />
   </div>
 </template>
 
 <script>
 const STORAGE_KEY = 'x-time-tracker-x';
 
+import { v4 as uuidv4 } from 'uuid';
 import ProjectBlock from './components/ProjectBlock';
 import Duration from './models/duration';
 
@@ -65,10 +66,11 @@ export default {
         return;
       }
 
-      this.projects[index] = project;
+      this.$set(this.projects, index, project);
+      this.save();
     },
     onNewProject() {
-      const id = new Date().getTime();
+      const id = uuidv4();
       const newProject = {
         id,
         name: this.projectName,
@@ -160,7 +162,6 @@ export default {
         return;
       }
 
-      console.log(json);
       const projects = JSON.parse(json);
 
       for (let project of projects) {
@@ -172,7 +173,6 @@ export default {
         }
       }
 
-      console.log(projects);
       this.projects = projects;
     }
   }
