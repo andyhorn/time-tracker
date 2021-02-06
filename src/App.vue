@@ -7,7 +7,6 @@
         <b-button variant="primary" @click="onNewProject" :disabled="isNewProjectDisabled">Submit</b-button>
       </b-input-group-append>
     </b-input-group>
-    <b-button variant="danger" @click="onStop" :disabled="isStopDisabled">Stop All</b-button>
     <project-block v-for="project in projects" :key="project.id" 
       :project="project"
       @selected="onProjectSelected"
@@ -54,9 +53,6 @@ export default {
     hasSelection() {
       return this.projects.some(p => p.isSelected);
     },
-    isStopDisabled() {
-      return !this.hasSelection;
-    }
   },
   methods: {
     onProjectChange(project) {
@@ -142,9 +138,6 @@ export default {
       }
 
       this.deSelectProject(project);
-    },
-    onStop() {
-      this.projects.forEach(this.deSelectProject);
     },
     save() {
       if (this.projects.length == 0) {
