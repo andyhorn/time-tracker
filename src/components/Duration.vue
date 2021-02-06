@@ -80,8 +80,6 @@ export default {
             const duration = new Duration(start.getTime(), end.getTime());
 
             this.displayEdit = false;
-            console.log('emitting changed duration:')
-            console.log(duration)
             this.$emit('change', this.duration.id, duration);
         },
         onCancel() {

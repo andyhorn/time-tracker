@@ -112,21 +112,26 @@ export default {
             this.$emit('stop', this.project.id);
         },
         onDurationChange(id, duration) {
-            console.log('duration changed:')
-            console.log(duration)
+            // copy the existing project data
             const project = Object.assign({}, this.project);
             const index = project.durations.findIndex(d => d.id == id);
-            console.log(`index of duration being changed: ${index}`)
 
             if (index == -1) {
                 return;
             }
 
+            // copy the list of durations into the new project data
             project.durations = [...this.project.durations];
+
+            // replace the duration with its updated data
             project.durations[index] = duration;
 
+            // update the project durations to account for the new
+            // start and end times
             this.updateDurations(project, duration);
 
+            // emit the changed project data to be updated by the
+            // parent components
             this.$emit('change', project);
         },
         updateDurations(project, duration) {
@@ -144,69 +149,45 @@ export default {
             this.pushAdjacentDurations(project, duration.id);
         },
         removeOverriddenDurations(project, id) {
-            console.log('removing overridden durations...')
             const begin = project.durations.find(d => d.id == id).begin;
             const end = project.durations.find(d => d.id == id).end;
 
-            console.log(`begin: ${begin}`)
-            console.log(`end: ${end}`)
-
+            // find any durations that are completely overridden by this
+            // updated duration, i.e. their start and end times fall within
+            // this updated duration's start and end time
             const toRemove = project.durations
                 .filter(dur => dur.begin >= begin && dur.end <= end && dur.id != id)
                 .map(dur => dur.id);
-
-            console.log('to remove:')
-            console.log(toRemove);
             
+            // remove any durations that were found to be overridden
             const filtered = project.durations
                 .filter(dur => !toRemove.some(id => id == dur.id));
-            console.log('filtered: ')
-            console.log(filtered)
 
             project.durations = filtered;
         },
         pushAdjacentDurations(project, id) {
-            console.log('pushing adjacent durations...')
             const index = project.durations.findIndex(d => d.id == id);
-            console.log(`index: ${index}`)
             const duration = project.durations[index];
             const begin = duration.begin;
             const end = duration.end;
 
-            // if (index != 0) {
-                console.log('pushing prior durations...')
-                for (let i = index - 1; i >= 0; i--) {
-                    if (project.durations[i].end > begin) {
-                        console.log('found adjacent duration that ends after this begins')
-                        console.log(project.durations[i])
-
-                        console.log('adjusted times:')
-                        const adjusted = new Dur(project.durations[i].begin, begin);
-                        console.log(adjusted)
-
-                        console.log('updating...')
-                        project.durations[i] = adjusted;
-                    }
+            // find any durations that end after this one begins and
+            // adjust their end time to be equal to this one's begin
+            for (let i = index - 1; i >= 0; i--) {
+                if (project.durations[i].end > begin) {
+                    const adjusted = new Dur(project.durations[i].begin, begin);
+                    project.durations[i] = adjusted;
                 }
-            // }
+            }
 
-            // if (index != project.durations.length - 1) {
-                console.log('pushing durations that start before this ends...')
-                for (let i = index + 1; i < project.durations.length; i++) {
-                    console.log(`end: ${end} - current begin: ${project.durations[i].begin}`)
-                    if (project.durations[i].begin < end) {
-                        console.log('found duration:')
-                        console.log(project.durations[i])
-
-                        console.log('adjusting times')
-                        const adjusted = new Dur(end, project.durations[i].end);
-                        console.log(adjusted)
-
-                        console.log('updating...')
-                        project.durations[i] = adjusted;
-                    }
+            // find any durations that begin before this one ends
+            // and adjust their start time to equal this one's end
+            for (let i = index + 1; i < project.durations.length; i++) {
+                if (project.durations[i].begin < end) {
+                    const adjusted = new Dur(end, project.durations[i].end);
+                    project.durations[i] = adjusted;
                 }
-            // }
+            }
         }
     }
 }
