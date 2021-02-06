@@ -60,12 +60,15 @@ export default {
   },
   methods: {
     onProjectChange(project) {
+      console.log('project changed!')
       const index = this.projects.findIndex(p => p.id == project.id);
 
       if (index == -1) {
+        console.log('index of project not found; exiting')
         return;
       }
 
+      console.log(index)
       this.$set(this.projects, index, project);
       this.save();
     },
