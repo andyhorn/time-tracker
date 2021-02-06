@@ -18,7 +18,7 @@
 
 <script>
 import Duration from '../models/duration';
-import { hour24ToDate } from '../utils/time';
+import { hour24ToDate, ticksTo24Hour } from '../utils/time';
 
 export default {
     name: 'Duration',
@@ -37,7 +37,7 @@ export default {
                 if (this.duration.begin == 0) {
                     this.startTime = null;
                 } else {
-                    this.startTime = this.getTimePickerString(this.duration.begin);
+                    this.startTime = ticksTo24Hour(this.duration.begin);
                 }
             }
         },
@@ -47,7 +47,7 @@ export default {
                 if (this.duration.end == 0) {
                     this.endTime = 0;
                 } else {
-                    this.endTime = this.getTimePickerString(this.duration.end);
+                    this.endTime = ticksTo24Hour(this.duration.end);
                 }
             }
         },
@@ -83,26 +83,10 @@ export default {
             this.$emit('change', this.duration.id, duration);
         },
         onCancel() {
-            this.startTime = this.getTimePickerString(this.duration.begin);
-            this.endTime = this.getTimePickerString(this.duration.end);
+            this.startTime = ticksTo24Hour(this.duration.begin);
+            this.endTime = ticksTo24Hour(this.duration.end);
             this.displayEdit = false;
         },
-        getTimePickerString(ticks) {
-            const date = new Date(ticks);
-            const timeString = date.toLocaleTimeString().split(' ')[0];
-            const meridian = date.toLocaleTimeString().split(' ')[1];
-            let hours = timeString.split(':')[0];
-            let minutes = timeString.split(':')[1];
-            let seconds = timeString.split(':')[2];
-
-            if (meridian == 'PM') {
-                let hourDigit = Number(hours);
-                hourDigit = (hourDigit + 12) % 24;
-                hours = hourDigit.toString().padStart(2, '0');
-            }
-
-            return `${hours}:${minutes}:${seconds}`;
-        }
     }
 }
 </script>

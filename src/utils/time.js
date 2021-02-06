@@ -30,6 +30,23 @@ export function hour24ToDate(time) {
     return date;
 }
 
+export function ticksTo24Hour(ticks) {
+    const date = new Date(ticks);
+    const timeString = date.toLocaleTimeString().split(' ')[0];
+    const meridian = date.toLocaleTimeString().split(' ')[1];
+    let hours = timeString.split(':')[0];
+    let minutes = timeString.split(':')[1];
+    let seconds = timeString.split(':')[2];
+
+    if (meridian == 'PM') {
+        let hourDigit = Number(hours);
+        hourDigit = (hourDigit + 12) % 24;
+        hours = hourDigit.toString().padStart(2, '0');
+    }
+
+    return `${hours}:${minutes}:${seconds}`;
+}
+
 function _padDigit(digit) {
     if (digit == null || isNaN(digit)) {
         return '00';
