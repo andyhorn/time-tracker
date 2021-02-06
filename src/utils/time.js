@@ -22,7 +22,7 @@ export function hour24ToDate(time) {
     const minute = time.split(':')[1];
     const second = time.split(':')[2];
 
-    const date = new Date();
+    const date = new Date(0);
     date.setHours(Number(hour));
     date.setMinutes(Number(minute));
     date.setSeconds(Number(second));
@@ -32,17 +32,10 @@ export function hour24ToDate(time) {
 
 export function ticksTo24Hour(ticks) {
     const date = new Date(ticks);
-    const timeString = date.toLocaleTimeString().split(' ')[0];
-    const meridian = date.toLocaleTimeString().split(' ')[1];
-    let hours = timeString.split(':')[0];
-    let minutes = timeString.split(':')[1];
-    let seconds = timeString.split(':')[2];
 
-    if (meridian == 'PM') {
-        let hourDigit = Number(hours);
-        hourDigit = (hourDigit + 12) % 24;
-        hours = hourDigit.toString().padStart(2, '0');
-    }
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
 
     return `${hours}:${minutes}:${seconds}`;
 }

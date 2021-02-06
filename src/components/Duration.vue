@@ -52,11 +52,19 @@ export default {
             }
         },
         'startTime'() {
-            const start = hour24ToDate(this.startTime);
-            const end = hour24ToDate(this.endTime);
+            const start = hour24ToDate(this.startTime).getTime();
+            const end = hour24ToDate(this.endTime).getTime();
 
             if (start > end) {
                 this.endTime = this.startTime;
+            }
+        },
+        'endTime'() {
+            const start = hour24ToDate(this.startTime).getTime();
+            const end = hour24ToDate(this.endTime).getTime();
+
+            if (end < start) {
+                this.startTime = this.endTime;
             }
         }
     },
