@@ -16,8 +16,24 @@ export default class Duration {
         return this._begin || 0;
     }
 
+    set begin(ticks) {
+        this._begin = ticks;
+
+        if (this._begin > this._end) {
+            this._end = this._begin;
+        }
+    }
+
     get end() {
         return this._end || 0;
+    }
+
+    set end(ticks) {
+        this._end = ticks;
+
+        if (this._end < this._begin) {
+            this._begin = this._end;
+        }
     }
 
     get duration() {

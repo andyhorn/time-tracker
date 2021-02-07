@@ -20,9 +20,10 @@
 <script>
 const STORAGE_KEY = 'x-time-tracker-x';
 
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import ProjectBlock from './components/ProjectBlock';
-import Duration from './models/duration';
+// import Duration from './models/duration';
+import Project from './models/project';
 
 export default {
   name: 'App',
@@ -66,13 +67,14 @@ export default {
       this.save();
     },
     onNewProject() {
-      const id = uuidv4();
-      const newProject = {
-        id,
-        name: this.projectName,
-        durations: [],
-        isSelected: false,
-      };
+      // const id = uuidv4();
+      // const newProject = {
+      //   id,
+      //   name: this.projectName,
+      //   durations: [],
+      //   isSelected: false,
+      // };
+      const newProject = new Project(this.projectName);
 
       this.projects.push(newProject);
       this.projects = this.projects.sort((a, b) => a.name < b.name ? -1 : 1);
@@ -94,37 +96,41 @@ export default {
         return;
       }
 
-      this.projects[index].durations = [];
+      this.projects[index].clear();
       this.projects[index].isSelected = false;
+      // this.projects[index].durations = [];
+      // this.projects[index].isSelected = false;
     },
     onProjectSelected(id) {
       for (const project of this.projects) {
         if (project.id == id) {
-          this.selectProject(project);
+          // this.selectProject(project);
+          project.setSelected();
         } else {
-          this.deSelectProject(project);
+          // this.deSelectProject(project);
+          project.setDeselected();
         }
       }
     },
-    selectProject(project) {
-      if (project.isSelected) {
-        return;
-      }
+    // selectProject(project) {
+    //   if (project.isSelected) {
+    //     return;
+    //   }
 
-      const duration = new Duration();
-      duration.start();
+    //   const duration = new Duration();
+    //   duration.start();
 
-      project.durations.push(duration);
-      project.isSelected = true;
-    },
-    deSelectProject(project) {
-      if (project.isSelected) {
-        const lastIndex = project.durations.length - 1;
-        project.durations[lastIndex].stop();
+    //   project.durations.push(duration);
+    //   project.isSelected = true;
+    // },
+    // deSelectProject(project) {
+    //   if (project.isSelected) {
+    //     const lastIndex = project.durations.length - 1;
+    //     project.durations[lastIndex].stop();
 
-        project.isSelected = false;
-      }
-    },
+    //     project.isSelected = false;
+    //   }
+    // },
     onProjectNameKeyUp(e) {
       if (e.code == 'Enter') {
         this.onNewProject();
@@ -137,7 +143,9 @@ export default {
         return;
       }
 
-      this.deSelectProject(project);
+      project.setDeselected();
+
+      // this.deSelectProject(project);
     },
     save() {
       if (this.projects.length == 0) {
@@ -155,16 +163,17 @@ export default {
         return;
       }
 
-      const projects = JSON.parse(json);
+      const projects = Project.parse(json);
+      // const projects = JSON.parse(json);
 
-      for (let project of projects) {
-        for (let i = 0; i < project.durations.length; i++) {
-          const begin = project.durations[i]._begin;
-          const end = project.durations[i]._end;
+      // for (let project of projects) {
+      //   for (let i = 0; i < project.durations.length; i++) {
+      //     const begin = project.durations[i]._begin;
+      //     const end = project.durations[i]._end;
 
-          project.durations[i] = new Duration(begin, end);
-        }
-      }
+      //     project.durations[i] = new Duration(begin, end);
+      //   }
+      // }
 
       this.projects = projects;
     }
