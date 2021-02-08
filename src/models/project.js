@@ -51,7 +51,14 @@ export default class Project {
         }
 
         this._durations[index] = duration;
-        this._updateDurations();
+
+        // after replacing the duration, remove any
+        // existing durations that are no longer needed
+        this._prune(duration.id);
+
+        // push the boundaries of any adjacent durations
+        // that have been taken by the new duration
+        this._adjust(duration.id);
     }
 
     setSelected() {
@@ -101,6 +108,8 @@ export default class Project {
         const begin = duration.begin;
         const end = duration.end;
 
+        // find any durations that fall entirely within
+        // the new durations
         const toRemove = this._durations
             .filter(d => d.begin >= begin && d.end <= end && d.id != id)
             .map(d => d.id);
@@ -121,12 +130,14 @@ export default class Project {
         const begin = duration.begin;
         const end = duration.end;
 
+        // push back the 'end' time of any overlapping durations
         for (let i = index - 1; i >= 0; i--) {
             if (this._durations[i].end > begin) {
                 this._durations[i].end = begin;
             }
         }
 
+        // push ahead the 'begin' time of any overlapping durations
         for (let i = index + 1; i < this._durations.length; i++) {
             if (this._durations[i].begin < end) {
                 this._durations[i].begin = end;
