@@ -70,6 +70,7 @@ export default {
       this.projects.push(newProject);
       this.projects = this.projects.sort((a, b) => a.name < b.name ? -1 : 1);
       this.projectName = '';
+      this.save();
     },
     onProjectDelete(id) {
       const index = this.projects.findIndex(p => p.id == id);
@@ -79,6 +80,7 @@ export default {
       }
 
       this.projects.splice(index, 1);
+      this.save();
     },
     onProjectClear(id) {
       const index = this.projects.findIndex(p => p.id == id);
@@ -89,6 +91,7 @@ export default {
 
       this.projects[index].clear();
       this.projects[index].isSelected = false;
+      this.save();
     },
     onProjectSelected(id) {
       for (const project of this.projects) {
@@ -112,6 +115,7 @@ export default {
       }
 
       project.setDeselected();
+      this.save();
     },
     save() {
       if (this.projects.length == 0) {

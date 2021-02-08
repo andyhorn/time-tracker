@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import Duration from './duration';
+import Vue from 'vue';
 
 export default class Project {
     constructor(name) {
@@ -50,7 +51,9 @@ export default class Project {
             return;
         }
 
-        this._durations[index] = duration;
+        // set the replacement duration using Vue to trigger
+        // a reactive rebuild of the UI
+        Vue.set(this._durations, index, duration);
 
         // after replacing the duration, remove any
         // existing durations that are no longer needed
@@ -103,6 +106,7 @@ export default class Project {
     }
 
     _prune(id) {
+        console.log('pruning...')
         const index = this._findIndex(id);
         const duration = this._durations[index];
         const begin = duration.begin;
@@ -115,9 +119,11 @@ export default class Project {
             .map(d => d.id);
 
         if (toRemove.length == 0) {
+            console.log('no pruning needed.')
             return;
         }
         
+        console.log(`removing ${toRemove.length} durations`)
         const filtered = this._durations
             .filter(d => toRemove.every(id => id != d.id));
 
@@ -125,6 +131,7 @@ export default class Project {
     }
 
     _adjust(id) {
+        console.log('adjusting...')
         const index = this._findIndex(id);
         const duration = this._durations[index];
         const begin = duration.begin;
@@ -133,6 +140,7 @@ export default class Project {
         // push back the 'end' time of any overlapping durations
         for (let i = index - 1; i >= 0; i--) {
             if (this._durations[i].end > begin) {
+                console.log('pushing item end back')
                 this._durations[i].end = begin;
             }
         }
@@ -140,6 +148,7 @@ export default class Project {
         // push ahead the 'begin' time of any overlapping durations
         for (let i = index + 1; i < this._durations.length; i++) {
             if (this._durations[i].begin < end) {
+                console.log('pushing item begin forward')
                 this._durations[i].begin = end;
             }
         }
