@@ -85,11 +85,11 @@ export default class Project {
         const projectData = JSON.parse(json);
 
         for (let project of projectData) {
-            const newProject = new Project(project.name);
+            const newProject = new Project(project._name);
 
-            for (let i = 0; i < project.durations; i++) {
-                const begin = project.durations[i].begin;
-                const end = project.durations[i].end;
+            for (const duration of project._durations) {
+                const begin = duration._begin;
+                const end = duration._end;
 
                 const newDuration = new Duration(begin, end);
 
