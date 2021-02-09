@@ -36,7 +36,9 @@
 
 <script>
 import Duration from './Duration';
-import { getDuration } from '../utils/time';
+import dayjs from 'dayjs';
+const duration = require('dayjs/plugin/duration');
+dayjs.extend(duration);
 
 export default {
     name: 'ProjectBlock',
@@ -49,6 +51,7 @@ export default {
             interval: null,
             startTicks: null,
             ticks: 0,
+            seconds: 0,
         }
     },
     watch: {
@@ -59,10 +62,14 @@ export default {
                     const endIndex = this.project.durations.length - 1;
                     this.startTicks = this.project.durations[endIndex].begin;
 
+                    const start = dayjs(this.startTicks);
+
                     const vm = this;
                     this.interval = setInterval(() => {
-                        const currentTicks = new Date().getTime();
-                        vm.ticks = currentTicks - vm.startTicks;
+                        const currentTime = dayjs();
+                        const diff = currentTime.diff(start);
+
+                        vm.ticks = diff;
                     }, 100);
                 } else {
                     clearInterval(this.interval);
@@ -77,14 +84,18 @@ export default {
                 return 'Not started.';
             }
 
-            let totalTicks = 0;
+            let duration = dayjs.duration(0);
             for (const dur of this.project.durations) {
-                totalTicks += dur.totalTicks;
+                duration = duration.add(dur.totalTicks, 'milliseconds');
+            }
+            
+            duration = duration.add(this.ticks, 'milliseconds');
+
+            if (duration.days > 0) {
+                return duration.format('D:H:mm:ss');
             }
 
-            totalTicks += this.ticks;
-
-            return getDuration(0, totalTicks);
+            return duration.format('H:mm:ss');
         },
         hasDurations() {
             return this.project.durations.length > 0;

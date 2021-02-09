@@ -1,4 +1,3 @@
-import { getDuration } from '../utils/time';
 import { v4 as uuidv4 } from 'uuid';
 
 export default class Duration {
@@ -34,10 +33,6 @@ export default class Duration {
         if (this._end < this._begin) {
             this._begin = this._end;
         }
-    }
-
-    get duration() {
-        return getDuration(this._begin, this._end);
     }
 
     get totalTicks() {

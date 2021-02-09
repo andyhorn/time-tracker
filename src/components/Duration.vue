@@ -18,7 +18,10 @@
 
 <script>
 import Duration from '../models/duration';
-import { hour24ToDate, ticksTo24Hour } from '../utils/time';
+import dayjs from 'dayjs';
+const customParseFormat = require('dayjs/plugin/customParseFormat');
+
+dayjs.extend(customParseFormat);
 
 export default {
     name: 'Duration',
@@ -37,7 +40,7 @@ export default {
                 if (this.duration.begin == 0) {
                     this.startTime = null;
                 } else {
-                    this.startTime = ticksTo24Hour(this.duration.begin);
+                    this.startTime = dayjs(this.duration.begin).format('HH:mm:ss');
                 }
             }
         },
@@ -47,21 +50,21 @@ export default {
                 if (this.duration.end == 0) {
                     this.endTime = 0;
                 } else {
-                    this.endTime = ticksTo24Hour(this.duration.end);
+                    this.endTime = dayjs(this.duration.end).format('HH:mm:ss');
                 }
             }
         },
         'startTime'() {
-            const start = hour24ToDate(this.startTime).getTime();
-            const end = hour24ToDate(this.endTime).getTime();
+            const start = dayjs(this.startTime, 'HH:mm:ss').unix();
+            const end = dayjs(this.endTime, 'HH:mm:ss').unix();
 
             if (start > end) {
                 this.endTime = this.startTime;
             }
         },
         'endTime'() {
-            const start = hour24ToDate(this.startTime).getTime();
-            const end = hour24ToDate(this.endTime).getTime();
+            const start = dayjs(this.startTime, 'HH:mm:ss').unix();
+            const end = dayjs(this.endTime, 'HH:mm:ss').unix();
 
             if (end < start) {
                 this.startTime = this.endTime;
@@ -70,29 +73,30 @@ export default {
     },
     methods: {
         printDuration(duration) {
-            const begin = new Date(duration.begin).toLocaleTimeString();
+            const begin = dayjs(duration.begin).format('h:mm:ss A');
 
             if (duration.end == 0) {
                 return `${begin} - Present`;
             }
 
-            const end = new Date(duration.end).toLocaleTimeString();
+            const end = dayjs(duration.end).format('h:mm:ss A');
             return `${begin} - ${end}`;
         },
         onEdit() {
             this.displayEdit = true;
         },
         onSave() {
-            const start = hour24ToDate(this.startTime);
-            const end = hour24ToDate(this.endTime);
-            const duration = new Duration(start.getTime(), end.getTime());
+            const start = dayjs(this.startTime, 'HH:mm:ss');
+            const end = dayjs(this.endTime, 'HH:mm:ss');
+
+            const duration = new Duration(start.unix(), end.unix());
 
             this.displayEdit = false;
             this.$emit('change', this.duration.id, duration);
         },
         onCancel() {
-            this.startTime = ticksTo24Hour(this.duration.begin);
-            this.endTime = ticksTo24Hour(this.duration.end);
+            this.startTime = dayjs(this.duration.begin).format('HH:mm:ss');
+            this.endTime = dayjs(this.duration.end).format('HH:mm:ss');
             this.displayEdit = false;
         },
     }
