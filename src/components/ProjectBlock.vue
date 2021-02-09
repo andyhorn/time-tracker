@@ -56,7 +56,8 @@ export default {
             immediate: true,
             handler: function () {
                 if (this.project.isSelected) {
-                    this.startTicks = new Date().getTime();
+                    const endIndex = this.project.durations.length - 1;
+                    this.startTicks = this.project.durations[endIndex].begin;
 
                     const vm = this;
                     this.interval = setInterval(() => {

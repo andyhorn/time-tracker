@@ -89,6 +89,7 @@ export default class Project {
 
         for (let project of projectData) {
             const newProject = new Project(project._name);
+            newProject.isSelected = project.isSelected;
 
             for (const duration of project._durations) {
                 const begin = duration._begin;
