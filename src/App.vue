@@ -2,6 +2,7 @@
   <div class="container pt-5">
     <b-button v-b-modal="'help-modal'" class="help-button"><b-icon-question /></b-button>
     <h1 class="text-center">Time Tracker</h1>
+    <total-duration class="text-center" :projects="projects" />
     <b-input-group class="mb-2">
       <b-form-input v-model="projectName" @keyup="onProjectNameKeyUp" placeholder="New project name..." />
       <b-input-group-append>
@@ -61,11 +62,13 @@ const STORAGE_KEY = 'x-time-tracker-x';
 
 import ProjectBlock from './components/ProjectBlock';
 import Project from './models/project';
+import TotalDuration from './components/TotalDuration';
 
 export default {
   name: 'App',
   components: {
     'project-block': ProjectBlock,
+    'total-duration': TotalDuration,
   },
   data() {
     return {
@@ -150,9 +153,6 @@ export default {
       }
 
       project.setDeselected();
-    },
-    onHelp() {
-
     },
     save() {
       if (this.projects.length == 0) {

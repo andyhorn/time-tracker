@@ -25,7 +25,7 @@
         </div>
         <div class="row">
             <div class="col">
-                <b-button variant="danger" @click.prevent.stop="onStop">Stop</b-button>
+                <b-button variant="danger" @click.prevent.stop="onStop" :disabled="isStopDisabled">Stop</b-button>
             </div>
             <div class="col text-right">
                 <b-button variant="info" @click.prevent.stop="onClearTimes" :disabled="isClearTimesDisabled">Clear Times</b-button>
@@ -49,48 +49,50 @@ export default {
     data() {
         return {
             interval: null,
-            startTicks: null,
-            ticks: 0,
-            seconds: 0,
+            // startTicks: null,
+            // ticks: 0,
+            // seconds: 0,
         }
     },
     watch: {
-        'project.isSelected': {
-            immediate: true,
-            handler: function () {
-                if (this.project.isSelected) {
-                    const endIndex = this.project.durations.length - 1;
-                    this.startTicks = this.project.durations[endIndex].begin;
+        // 'project.isSelected': {
+        //     immediate: true,
+        //     handler: function () {
+        //         if (this.project.isSelected) {
+        //             setInterval(() => this.totalDuration, 500);
+        //         } else {
+        //             clearInterval(this.interval);
+        //         }
+        //         // if (this.project.isSelected) {
+        //         //     const endIndex = this.project.durations.length - 1;
+        //         //     this.startTicks = this.project.durations[endIndex].begin;
 
-                    const start = dayjs(this.startTicks);
+        //         //     const start = dayjs(this.startTicks);
 
-                    const vm = this;
-                    this.interval = setInterval(() => {
-                        const currentTime = dayjs();
-                        const diff = currentTime.diff(start);
+        //         //     const vm = this;
+        //         //     this.interval = setInterval(() => {
+        //         //         const currentTime = dayjs();
+        //         //         const diff = currentTime.diff(start);
 
-                        vm.ticks = diff;
-                    }, 100);
-                } else {
-                    clearInterval(this.interval);
-                    this.ticks = 0;
-                }
-            }
-        }
+        //         //         vm.ticks = diff;
+        //         //     }, 100);
+        //         // } else {
+        //         //     clearInterval(this.interval);
+        //         //     this.ticks = 0;
+        //         // }
+        //     }
+        // }
     },
     computed: {
+        totalTicks() {
+            return this.project.durations.reduce((sum, dur) => sum += dur.totalTicks, 0);
+        },
         totalDuration() {
             if (this.project.durations.length == 0) {
                 return 'Not started.';
             }
 
-            let duration = dayjs.duration(0);
-            for (const dur of this.project.durations) {
-                duration = duration.add(dur.totalTicks, 'milliseconds');
-            }
-
-            duration = duration.add(this.ticks, 'milliseconds');
-
+            const duration = dayjs.duration(this.totalTicks);
             if (duration.days > 0) {
                 return duration.format('D:H:mm:ss');
             }
@@ -107,6 +109,9 @@ export default {
             return this.project.isSelected
                 ? 'active'
                 : 'inactive';
+        },
+        isStopDisabled() {
+            return !this.project.isSelected;
         }
     },
     methods: {
