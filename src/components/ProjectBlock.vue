@@ -19,7 +19,7 @@
             <div class="col-md-6 col-lg-5">
                 <ul class="list-group my-3">
                     <duration v-for="duration in project.durations" :key="duration.id"
-                        :duration="duration" @change="onDurationChange" />
+                        :duration="duration" @change="onDurationChange" @delete="onDurationDelete" />
                 </ul>
             </div>
         </div>
@@ -128,6 +128,9 @@ export default {
             this.project.replaceDuration(id, duration);
             this.$emit('change', this.project);
         },
+        onDurationDelete(id) {
+            this.project.removeDuration(id);
+        }
     }
 }
 </script>

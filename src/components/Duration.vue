@@ -5,8 +5,18 @@
             <span> - </span>
             <b-form-timepicker size="sm" show-seconds v-model="endTime" />
             <div class="d-flex flex-column align-items-between justify-content-center m-2">
-                <b-icon-check-circle class="my-2 text-success icon-btn" @click.prevent.stop="onSave"/>
-                <b-icon-x-circle class="my-2 text-danger icon-btn" @click.prevent.stop="onCancel"/>
+                <div class="d-flex align-items-center">
+                    <b-icon-check-circle class="my-2 text-success icon-btn" @click.prevent.stop="onSave"/>
+                    <p>Save</p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <b-icon-x-circle class="my-2 text-danger icon-btn" @click.prevent.stop="onCancel"/>
+                    <p>Cancel</p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <b-icon-trash class="my-2 text-danger icon-btn" @click.prevent.stop="onDelete"/>
+                    <p>Delete</p>
+                </div>
             </div>
         </div>
         <div v-else class="d-flex justify-content-between">
@@ -102,6 +112,9 @@ export default {
             this.endTime = dayjs(this.duration.end).format(saveFormat);
             this.displayEdit = false;
         },
+        onDelete() {
+            this.$emit('delete', this.duration.id);
+        }
     }
 }
 </script>
@@ -109,5 +122,11 @@ export default {
 <style scoped>
 .icon-btn:hover {
     cursor: pointer;
+}
+.icon-btn + p {
+    font-size: 0.7rem;
+    margin: 0;
+    padding: 0;
+    padding-left: 5px;
 }
 </style>
