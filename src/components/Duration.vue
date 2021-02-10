@@ -23,6 +23,9 @@ const customParseFormat = require('dayjs/plugin/customParseFormat');
 
 dayjs.extend(customParseFormat);
 
+const saveFormat = 'HH:mm:ss';
+const displayFormat = 'h:mm:ss A';
+
 export default {
     name: 'Duration',
     props: ['duration'],
@@ -40,7 +43,7 @@ export default {
                 if (this.duration.begin == 0) {
                     this.startTime = null;
                 } else {
-                    this.startTime = dayjs(this.duration.begin).format('HH:mm:ss');
+                    this.startTime = dayjs(this.duration.begin).format(saveFormat);
                 }
             }
         },
@@ -50,21 +53,21 @@ export default {
                 if (this.duration.end == 0) {
                     this.endTime = 0;
                 } else {
-                    this.endTime = dayjs(this.duration.end).format('HH:mm:ss');
+                    this.endTime = dayjs(this.duration.end).format(saveFormat);
                 }
             }
         },
         'startTime'() {
-            const start = dayjs(this.startTime, 'HH:mm:ss').unix();
-            const end = dayjs(this.endTime, 'HH:mm:ss').unix();
+            const start = dayjs(this.startTime, saveFormat).unix();
+            const end = dayjs(this.endTime, saveFormat).unix();
 
             if (start > end) {
                 this.endTime = this.startTime;
             }
         },
         'endTime'() {
-            const start = dayjs(this.startTime, 'HH:mm:ss').unix();
-            const end = dayjs(this.endTime, 'HH:mm:ss').unix();
+            const start = dayjs(this.startTime, saveFormat).unix();
+            const end = dayjs(this.endTime, saveFormat).unix();
 
             if (end < start) {
                 this.startTime = this.endTime;
@@ -73,30 +76,30 @@ export default {
     },
     methods: {
         printDuration(duration) {
-            const begin = dayjs(duration.begin).format('h:mm:ss A');
+            const begin = dayjs(duration.begin).format(displayFormat);
 
             if (duration.end == 0) {
                 return `${begin} - Present`;
             }
 
-            const end = dayjs(duration.end).format('h:mm:ss A');
+            const end = dayjs(duration.end).format(displayFormat);
             return `${begin} - ${end}`;
         },
         onEdit() {
             this.displayEdit = true;
         },
         onSave() {
-            const start = dayjs(this.startTime, 'HH:mm:ss');
-            const end = dayjs(this.endTime, 'HH:mm:ss');
+            const start = dayjs(this.startTime, saveFormat, true);
+            const end = dayjs(this.endTime, saveFormat, true);
 
-            const duration = new Duration(start.unix(), end.unix());
+            const duration = new Duration(start.valueOf(), end.valueOf());
 
             this.displayEdit = false;
             this.$emit('change', this.duration.id, duration);
         },
         onCancel() {
-            this.startTime = dayjs(this.duration.begin).format('HH:mm:ss');
-            this.endTime = dayjs(this.duration.end).format('HH:mm:ss');
+            this.startTime = dayjs(this.duration.begin).format(saveFormat);
+            this.endTime = dayjs(this.duration.end).format(saveFormat);
             this.displayEdit = false;
         },
     }

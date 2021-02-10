@@ -88,7 +88,7 @@ export default {
             for (const dur of this.project.durations) {
                 duration = duration.add(dur.totalTicks, 'milliseconds');
             }
-            
+
             duration = duration.add(this.ticks, 'milliseconds');
 
             if (duration.days > 0) {
