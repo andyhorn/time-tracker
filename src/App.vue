@@ -1,5 +1,6 @@
 <template>
   <div class="container pt-5">
+    <b-button v-b-modal="'help-modal'" class="help-button"><b-icon-question /></b-button>
     <h1 class="text-center">Time Tracker</h1>
     <b-input-group class="mb-2">
       <b-form-input v-model="projectName" @keyup="onProjectNameKeyUp" placeholder="New project name..." />
@@ -14,6 +15,44 @@
       @clear="onProjectClear"
       @stop="onProjectStop"
       @change="onProjectChange" />
+    <b-modal id="help-modal" title="Help" hide-header-close ok-only :content-class="['bg-dark']">
+      <b-container>
+        <h2>Welcome to Time Tracker!</h2>
+        <p>This tool is useful for tracking how much time you spend on various projects throughout your day.</p>
+        <p>There are two controls to get familiar with: <br/>
+        <strong>Blocks</strong> and <strong>Durations</strong>.</p>
+
+        <h2>Blocks</h2>
+        <p>Each project is tracked within a <strong>Project Block</strong>, containing the project's name 
+        and the series of <strong>Durations</strong> associated with it. To create a new <strong>Project Block</strong>, 
+        enter its name in the textbox and click "Submit" (or press the Enter key).</p>
+
+        <img src="img/project_block.png" class="img-thumbnail" />
+
+        <p>Once you have created a <strong>Project Block</strong>, all you need to do is click it to begin 
+        tracking your time.</p>
+
+        <img src="img/active_project.png" class="img-thumbnail" />
+
+        <p><strong>Note:</strong> Only one project can be active at any time. Clicking on a <strong>Project 
+        Block</strong> will de-activate any others.</p>
+
+        <h2>Durations</h2>
+        <p>Each <strong>Project Block</strong> will hold a list of <strong>Durations</strong> representing how 
+        long you have worked on that project. Clicking to activate a project will mark the start time; 
+        Stopping a project, by activating another project or by clicking the <strong>Stop</strong> button, 
+        will mark the end time.</p>
+        <p>Each pair of <strong>start</strong> and <strong>stop</strong> times will be added to the 
+        <strong>Duration</strong> list.</p>
+
+        <img src="img/pencil_icon.png" class="img-thumbnail" />
+
+        <p>Clicking the pencil icon on a <strong>Duration</strong> will allow you to edit (or remove) that 
+        duration, in case you need to make any adjustments.</p>
+
+        <img src="img/edit_options.png" class="img-thumbnail" />
+      </b-container>
+    </b-modal>
   </div>
 </template>
 
@@ -112,6 +151,9 @@ export default {
 
       project.setDeselected();
     },
+    onHelp() {
+
+    },
     save() {
       if (this.projects.length == 0) {
         localStorage.removeItem(STORAGE_KEY);
@@ -137,5 +179,9 @@ export default {
 </script>
 
 <style>
-
+.help-button {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
 </style>
