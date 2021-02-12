@@ -129,16 +129,12 @@ export default {
       }
 
       this.projects[index].clear();
-      this.projects[index].isSelected = false;
+      this.projects[index].setSelected(false);
     },
     onProjectSelected(id) {
-      for (const project of this.projects) {
-        if (project.id == id) {
-          project.setSelected();
-        } else {
-          project.setDeselected();
-        }
-      }
+      this.projects.forEach(project => {
+        project.setSelected(project.id == id);
+      });
     },
     onProjectNameKeyUp(e) {
       if (e.code == 'Enter') {
@@ -152,7 +148,7 @@ export default {
         return;
       }
 
-      project.setDeselected();
+      project.setSelected(false);
     },
     save() {
       if (this.projects.length == 0) {

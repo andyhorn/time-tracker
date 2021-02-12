@@ -7,7 +7,7 @@ export default class Project {
         this._name = name;
         this._id = uuidv4();
         this._durations = [];
-        this.isSelected = false;
+        this._isSelected = false;
     }
 
     get durations() {
@@ -20,6 +20,10 @@ export default class Project {
 
     get name() {
         return this._name;
+    }
+
+    get isSelected() {
+        return this._isSelected;
     }
 
     clear() {
@@ -64,7 +68,15 @@ export default class Project {
         this._adjust(duration.id);
     }
 
-    setSelected() {
+    setSelected(isSelected) {
+        if (isSelected) {
+            this._select();
+        } else {
+            this._deselect();
+        }
+    }
+
+    _select() {
         if (this.isSelected) {
             return;
         }
@@ -73,14 +85,16 @@ export default class Project {
         duration.start();
 
         this.addDuration(duration);
-        this.isSelected = true;
+        this._isSelected = true;
     }
 
-    setDeselected() {
-        const index = this._durations.length - 1;
-        this._durations[index].stop();
-
-        this.isSelected = false;
+    _deselect() {
+        this._durations.forEach(duration => {
+            if (duration.isCounting) {
+                duration.stop();
+            }
+        });
+        this._isSelected = false;
     }
 
     static parse(json) {
@@ -89,7 +103,7 @@ export default class Project {
 
         for (let project of projectData) {
             const newProject = new Project(project._name);
-            newProject.isSelected = project.isSelected;
+            newProject._isSelected = project.isSelected;
 
             for (const duration of project._durations) {
                 const begin = duration._begin;

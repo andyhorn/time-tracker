@@ -46,43 +46,6 @@ export default {
     components: {
         'duration': Duration,
     },
-    data() {
-        return {
-            interval: null,
-            // startTicks: null,
-            // ticks: 0,
-            // seconds: 0,
-        }
-    },
-    watch: {
-        // 'project.isSelected': {
-        //     immediate: true,
-        //     handler: function () {
-        //         if (this.project.isSelected) {
-        //             setInterval(() => this.totalDuration, 500);
-        //         } else {
-        //             clearInterval(this.interval);
-        //         }
-        //         // if (this.project.isSelected) {
-        //         //     const endIndex = this.project.durations.length - 1;
-        //         //     this.startTicks = this.project.durations[endIndex].begin;
-
-        //         //     const start = dayjs(this.startTicks);
-
-        //         //     const vm = this;
-        //         //     this.interval = setInterval(() => {
-        //         //         const currentTime = dayjs();
-        //         //         const diff = currentTime.diff(start);
-
-        //         //         vm.ticks = diff;
-        //         //     }, 100);
-        //         // } else {
-        //         //     clearInterval(this.interval);
-        //         //     this.ticks = 0;
-        //         // }
-        //     }
-        // }
-    },
     computed: {
         totalTicks() {
             return this.project.durations.reduce((sum, dur) => sum += dur.totalTicks, 0);
